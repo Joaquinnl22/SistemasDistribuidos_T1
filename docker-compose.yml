@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # postgresql:
+  #   image: 'bitnami/postgresql:13.6.0'
+  #   volumes:
+  #     - ./server/init.sql:/docker-enviroment-entrypoint-initdb.d/init.sql
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #   depends_on:
+  #     - server
+  server: 
+    build: ./server
+    env_file: .env
+
+    volumes:
+      - ./server/data_base.js:/app/data_base.js
+      - ./server/server.js:/app/server.js
+      - ./server/todo.proto:/app/todo.proto
+  client:
+    build: ./cliente
+    env_file: .env
+    volumes:
+      - ./cliente/client.js:/app/client.js
+      - ./cliente/main.js:/app/main.js
+      - ./cliente/todo.proto:/app/todo.proto
+    environment:
+      - GRPC_SERVER_HOST=server
+      - PORT=3000
+      - PROTO_PATH=/app/item.proto
